@@ -3,6 +3,7 @@ import { useReducer, useCallback } from 'react';
 const UNDO = 'UNDO';
 const REDO = 'REDO';
 const SET = 'SET';
+const REPLACE = 'REPLACE';
 const RESET = 'RESET';
 
 const initialState = {
@@ -50,6 +51,19 @@ const reducer = (state, action) => {
       };
     }
 
+    case REPLACE: {
+      const { newPresent } = action;
+
+      if (newPresent === present) {
+        return state;
+      }
+      return {
+        past,
+        present: newPresent,
+        future: [],
+      };
+    }
+
     case RESET: {
       const { newPresent } = action;
 
@@ -84,12 +98,16 @@ const useUndo = initialPresent => {
     newPresent => dispatch({ type: SET, newPresent }),
     []
   );
+  const replace = useCallback(
+    newPresent => dispatch({ type: REPLACE, newPresent }),
+    []
+  );
   const reset = useCallback(
     newPresent => dispatch({ type: RESET, newPresent }),
     []
   );
 
-  return [state, { set, reset, undo, redo, canUndo, canRedo }];
+  return [state, { set, reset, replace, undo, redo, canUndo, canRedo }];
 };
 
 export default useUndo;

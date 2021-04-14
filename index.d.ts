@@ -1,5 +1,6 @@
 interface Actions<T> {
   set: (newPresent: T) => void;
+  replace: (newPresent: T) => void;
   reset: (newPresent: T) => void;
   undo: () => void;
   redo: () => void;
